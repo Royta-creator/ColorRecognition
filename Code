@@ -1,0 +1,81 @@
+# ROY TAMWO 13/12/2023
+
+import cv2
+import numpy as np
+import serial
+import time
+import threading
+
+dominant_color_circle1 = "White"
+dominant_color_circle2 = "Black"
+dominant_color_circle3 = "White"
+bias = 0
+
+cap = cv2.VideoCapture(0)
+
+def get_dominant_color(image, circle_center, circle_radius):
+    x, y = circle_center
+    roi = image[y - circle_radius:y + circle_radius, x - circle_radius:x + circle_radius]
+
+    hist = cv2.calcHist([roi], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+
+    dominant_bin = np.unravel_index(hist.argmax(), hist.shape)
+
+    dominant_color = np.array([dominant_bin[2] * 32, dominant_bin[1] * 32, dominant_bin[0] * 32], dtype=np.uint8)
+
+    grayscale_intensity = 0.299 * dominant_color[0] + 0.587 * dominant_color[1] + 0.114 * dominant_color[2]
+
+    if grayscale_intensity < 128:
+        dominant_color_string = 'Black'
+    else:
+        dominant_color_string = 'White'
+
+    return dominant_color_string
+def ComputerVision():
+    global dominant_color_circle1
+    global dominant_color_circle2
+    global dominant_color_circle3
+    global bias
+    while True:
+        ret, frame = cap.read()
+        
+        cv2.line(frame, (450-30, 0), (450-30, 500), (0, 255, 0), 3)
+
+        circle1_center = (100+bias, 230)
+        circle2_center = (325, 230)
+        circle3_center = (550-bias, 230)
+        circle_radius = 25
+
+        cv2.circle(frame, circle1_center, circle_radius, (0, 0, 255), 1)
+        cv2.circle(frame, circle2_center, circle_radius, (0, 0, 255), 1)
+        cv2.circle(frame, circle3_center, circle_radius, (0, 0, 255), 1)
+
+        dominant_color_circle1 = get_dominant_color(frame, circle1_center, circle_radius)
+        dominant_color_circle2 = get_dominant_color(frame, circle2_center, circle_radius)
+        dominant_color_circle3 = get_dominant_color(frame, circle3_center, circle_radius)
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.5
+        color = (0, 255, 0)
+        thickness = 1
+
+        cv2.putText(frame, f'{dominant_color_circle1}', (50, 50), font, font_scale, color, thickness)
+        cv2.putText(frame, f'{dominant_color_circle2}', (275, 50), font, font_scale, color, thickness)
+        cv2.putText(frame, f'{dominant_color_circle3}', (500, 50), font, font_scale, color, thickness)
+
+        cv2.line(frame, (200+30, 0), (200+30, 500), (0, 255, 0), 3)
+
+        cv2.imshow('Webcam Output', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('e'):
+            bias += 10
+        if cv2.waitKey(1) & 0xFF == ord('r'):
+            bias -= 10
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+t1 = threading.Thread(target=ComputerVision)
+t1.start()
