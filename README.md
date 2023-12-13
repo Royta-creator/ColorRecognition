@@ -1,4 +1,5 @@
-Computer Vision Project
+Color Detection Project:
+
 This project utilizes computer vision to detect and classify dominant colors in specific circles captured by a webcam. The program identifies whether the dominant color in each circle is black or white.
 
 Features:
