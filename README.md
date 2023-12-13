@@ -5,12 +5,16 @@ This project utilizes computer vision to detect and classify dominant colors in 
 Features:
 Dominant Color Detection: The program analyzes the webcam image to determine the dominant color (black or white) in three predefined circles.
 Real-Time Display: Results are displayed in real-time on the webcam feed.
-User Interaction: Users can adjust the position of the circles using the 'e' and 'r' keys.
-Prerequisites
+
+User Interaction: 
+Users can adjust the position of the circles using the 'e' and 'r' keys.
+
+Prerequisites:
 Python 3.x
 OpenCV (cv2)
 NumPy
-Installation
+
+Installation:
 Install Python 3.x on your system.
 
 Usage:
