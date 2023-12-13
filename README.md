@@ -30,3 +30,4 @@ ComputerVision(): Main function that initiates video capture and applies dominan
 Notes:
 This project is a basic demonstration of computer vision and color detection.
 The script can be modified to integrate other features, such as communication with an Arduino for robotics applications.
+I had alot of trouble to make the dominant color function so I did use some help from online sources on that part.
